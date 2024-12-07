@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  client:
+    build:
+      context: ../client
+    ports:
+      - 5001:5001
+    volumes:
+      - ../client:/usr/src/app
+
+  server:
+    build:
+      context: ../server
+    ports:
+      - 5000:5000
+    volumes:
+      - ../server:/usr/src/app
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:8.0
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

@@ -1,0 +1,39 @@
+// registerAdmin.mongosh
+
+// Command line arguments
+const username = process.argv[2];
+const password = process.argv[3];
+const email = process.argv[4];
+const firstname = process.argv[5];
+const lastname = process.argv[6];
+
+if (!username || !password || !email || !firstname || !lastname) {
+  print('Usage: mongosh registerAdmin.mongosh <username> <password> <email> <firstname> <lastname>');
+  quit(1);
+}
+
+// Connect to the database
+const conn = new Mongo();
+const db = conn.getDB('yourDatabaseName');  // Replace with your database name
+
+// Hash the password (ensure you have bcrypt support in your mongosh environment)
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+const hashedPassword = bcrypt.hashSync(password, saltRounds);
+
+// Create the admin user
+const adminUser = {
+  username: username,
+  password: hashedPassword,
+  email: email,
+  firstname: firstname,
+  lastname: lastname,
+  role: 'admin',
+  createdAt: new Date(),
+  updatedAt: new Date()
+};
+
+// Insert the admin user into the users collection
+db.users.insertOne(adminUser);
+
+print('Admin user registered successfully');
